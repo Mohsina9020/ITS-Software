@@ -79,7 +79,7 @@ function collectProblems(page: Page, problems: string[]) {
  */
 const VAULT_SETUP = `
   const db = await new Promise((resolve, reject) => {
-    const request = indexedDB.open("invoify-secure", 2);
+    const request = indexedDB.open("its-secure", 2);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
@@ -185,7 +185,7 @@ async function openLanguageMenu(page: Page) {
  */
 async function seedDraft(page: Page) {
     await page.addInitScript((invoice) => {
-        window.localStorage.setItem("invoify:invoiceDraft", JSON.stringify(invoice));
+        window.localStorage.setItem("its:invoiceDraft", JSON.stringify(invoice));
     }, SAMPLE_INVOICE);
 }
 
@@ -244,7 +244,7 @@ test.describe("invoice builder", () => {
         await page.waitForTimeout(1200);
         const draft = await readStored<{ sender: { name: string } }>(
             page,
-            "invoify:invoiceDraft"
+            "its:invoiceDraft"
         );
         expect(draft, "draft should be written after the debounce").toBeTruthy();
         expect(draft!.sender.name).toBe("Alexandria Consulting Group");
@@ -885,7 +885,7 @@ test.describe("invoice builder", () => {
                     (
                         await readStored<{
                             details?: { invoiceNumber?: string };
-                        }>(page, "invoify:invoiceDraft")
+                        }>(page, "its:invoiceDraft")
                     )?.details?.invoiceNumber ?? null,
                 { timeout: 5000 }
             )
@@ -943,7 +943,7 @@ test.describe("invoice builder", () => {
                     (
                         await readStored<{ sender?: { name?: string } }>(
                             page,
-                            "invoify:invoiceDraft"
+                            "its:invoiceDraft"
                         )
                     )?.sender?.name ?? null,
                 { timeout: 5000 }
@@ -1120,7 +1120,7 @@ test.describe("invoice builder", () => {
             await page.addInitScript(
                 ({ invoice, logo, template }) => {
                     window.localStorage.setItem(
-                        "invoify:invoiceDraft",
+                        "its:invoiceDraft",
                         JSON.stringify({
                             ...invoice,
                             details: {
@@ -1365,10 +1365,10 @@ test.describe("invoice builder", () => {
          * your own company into the client picker.
          */
         const senders =
-            (await readStored<{ name: string }[]>(page, "invoify:senders")) ??
+            (await readStored<{ name: string }[]>(page, "its:senders")) ??
             [];
         const clients =
-            (await readStored<{ name: string }[]>(page, "invoify:clients")) ??
+            (await readStored<{ name: string }[]>(page, "its:clients")) ??
             [];
         expect(senders.map((p) => p.name)).toEqual(["John Doe"]);
         expect(clients).toEqual([]);
@@ -1397,7 +1397,7 @@ test.describe("invoice builder", () => {
          * seeded invoice rather than a token string, because a partial
          * encryption would still leak exactly these.
          */
-        for (const key of ["invoify:clients", "invoify:invoiceDraft"]) {
+        for (const key of ["its:clients", "its:invoiceDraft"]) {
             expect(await isEncrypted(page, key), `${key} ciphertext`).toBe(true);
 
             /*
@@ -1422,7 +1422,7 @@ test.describe("invoice builder", () => {
         // And it is genuinely the data, not just scrambled beyond use.
         const clients = await readStored<{ name: string }[]>(
             page,
-            "invoify:clients"
+            "its:clients"
         );
         expect(clients?.map((c) => c.name)).toEqual(["Jane Smith"]);
 
@@ -1435,7 +1435,7 @@ test.describe("invoice builder", () => {
             const db = await new Promise<IDBDatabase>((resolve, reject) => {
                 // Must match the app's DB_VERSION; opening with a lower one
                 // throws VersionError rather than downgrading.
-                const request = indexedDB.open("invoify-secure", 2);
+                const request = indexedDB.open("its-secure", 2);
                 request.onsuccess = () => resolve(request.result);
                 request.onerror = () => reject(request.error);
             });
@@ -1481,7 +1481,7 @@ test.describe("invoice builder", () => {
         // Exactly what the previous release wrote.
         await page.addInitScript(() => {
             window.localStorage.setItem(
-                "invoify:clients",
+                "its:clients",
                 JSON.stringify([
                     {
                         id: "legacy-1",
@@ -1511,7 +1511,7 @@ test.describe("invoice builder", () => {
 
         // And rewritten encrypted, rather than left as it was found.
         await expect
-            .poll(() => isEncrypted(page, "invoify:clients"))
+            .poll(() => isEncrypted(page, "its:clients"))
             .toBe(true);
 
         /*
@@ -1520,11 +1520,11 @@ test.describe("invoice builder", () => {
          */
         expect(
             await page.evaluate(() =>
-                window.localStorage.getItem("invoify:clients")
+                window.localStorage.getItem("its:clients")
             )
         ).toBeNull();
         expect(
-            (await rawStored(page, "invoify:clients")).includes(
+            (await rawStored(page, "its:clients")).includes(
                 "legacy@example.com"
             )
         ).toBe(false);

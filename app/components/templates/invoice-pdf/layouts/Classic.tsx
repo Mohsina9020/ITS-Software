@@ -15,7 +15,7 @@ import {
 } from "../parts";
 
 /**
- * Classic — the original Invoify look, preserved so invoices saved against
+ * Classic — the original ITS look, preserved so invoices saved against
  * template 1 keep rendering the way their author expects. Logo and sender on
  * the left, a large "Invoice" title and meta on the right.
  */

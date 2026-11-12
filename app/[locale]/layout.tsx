@@ -52,10 +52,10 @@ export async function generateMetadata(props: {
     const messages = await getMessages(locale);
     const meta = (messages as Record<string, Record<string, string>>)?.meta ?? {};
 
-    const title = meta.title ?? "Invoify | Free Invoice Generator";
+    const title = meta.title ?? "ITS (Ishaq Technical Solution) | Free Invoice Generator";
     const description =
         meta.description ??
-        "Create invoices effortlessly with Invoify, the free invoice generator. Try it now!";
+        "Create invoices effortlessly with ITS (Ishaq Technical Solution), the free invoice generator. Try it now!";
 
     return {
         // Resolves every relative URL below, including the generated OG image.
@@ -70,7 +70,7 @@ export async function generateMetadata(props: {
         },
         openGraph: {
             type: "website",
-            siteName: "Invoify",
+            siteName: "ITS (Ishaq Technical Solution)",
             title,
             description,
             url: localePath(locale),
@@ -82,8 +82,7 @@ export async function generateMetadata(props: {
             description,
         },
         authors: {
-            name: "Ali Abbasov",
-            url: "https://aliabb.vercel.app",
+            name: "Mohsina Abbas",
         },
         verification: {
             google: GOOGLE_SC_VERIFICATION,
@@ -172,7 +171,7 @@ export default async function LocaleLayout(props: {
                             data-cfasync="false"
                             data-id="aliabb"
                             data-description="Support me on Buy me a coffee!"
-                            data-message="Thank you for using Invoify"
+                            data-message="Thank you for using ITS (Ishaq Technical Solution)"
                             data-color="#5F7FFF"
                             data-position="Right"
                             data-x_margin="18"

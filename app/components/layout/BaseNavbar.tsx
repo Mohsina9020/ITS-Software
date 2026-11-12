@@ -4,10 +4,6 @@ import { useMemo, useState } from "react";
 
 // Next
 import Link from "next/link";
-import Image from "next/image";
-
-// Assets
-import Logo from "@/public/assets/img/invoify-logo.svg";
 
 // ShadCn
 import {
@@ -44,16 +40,17 @@ const BaseNavbar = () => {
     return (
         <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
             <nav className="container flex h-16 items-center justify-between gap-4">
-                <Link href="/" className="flex shrink-0 items-center">
-                    <Image
-                        src={Logo}
-                        alt="Invoify Logo"
-                        width={887}
-                        height={294}
-                        loading="eager"
-                        priority
-                        className="h-9 w-auto sm:h-10"
-                    />
+                <Link
+                    href="/"
+                    className="flex shrink-0 flex-col justify-center leading-tight"
+                    aria-label="ITS (Ishaq Technical Solution)"
+                >
+                    <span className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+                        ITS
+                    </span>
+                    <span className="hidden text-[10px] text-muted-foreground sm:block">
+                        Ishaq Technical Solution
+                    </span>
                 </Link>
 
                 {/* ? DEV Only */}

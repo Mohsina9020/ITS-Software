@@ -31,8 +31,8 @@ export type PartyKind = "sender" | "receiver";
  * books saved by an earlier version are still found.
  */
 const STORAGE_KEYS: Record<PartyKind, string> = {
-    receiver: "invoify:clients",
-    sender: "invoify:senders",
+    receiver: "its:clients",
+    sender: "its:senders",
 };
 
 export const partyStorageKey = (kind: PartyKind) => STORAGE_KEYS[kind];

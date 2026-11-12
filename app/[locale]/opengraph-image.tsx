@@ -11,7 +11,7 @@ import { getMessages } from "@/i18n/messages";
  * to the site unfurled as a bare URL — and `lib/seo.ts` pointed its JSON-LD
  * `image` at a hashed build artefact that 404s after any rebuild.
  */
-export const alt = "Invoify — free invoice generator";
+export const alt = "ITS (Ishaq Technical Solution) — free invoice generator";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -54,14 +54,14 @@ export default async function OpengraphImage(props: {
                             alignItems: "center",
                             justifyContent: "center",
                             color: "#fff",
-                            fontSize: 34,
+                            fontSize: 22,
                             fontWeight: 700,
                         }}
                     >
-                        I
+                        ITS
                     </div>
-                    <div style={{ color: "#8E88F7", fontSize: 34, fontWeight: 700 }}>
-                        Invoify
+                    <div style={{ color: "#8E88F7", fontSize: 28, fontWeight: 700 }}>
+                        ITS (Ishaq Technical Solution)
                     </div>
                 </div>
 
@@ -97,7 +97,7 @@ export default async function OpengraphImage(props: {
                         fontSize: 24,
                     }}
                 >
-                    <span>invoify.vercel.app</span>
+                    <span>Ishaq Technical Solution</span>
                 </div>
             </div>
         ),

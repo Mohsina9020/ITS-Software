@@ -47,7 +47,7 @@ import { readSecure, removeSecure, writeSecure } from "@/lib/secureStore";
 import { ExportTypes, InvoiceType } from "@/types";
 
 /**
- * Unprefixed, unlike the newer invoify: keys — this one predates that
+ * Unprefixed, unlike the newer its: keys — this one predates that
  * namespace and renaming it would orphan every invoice anyone has saved.
  */
 const SAVED_INVOICES_KEY = "savedInvoices";

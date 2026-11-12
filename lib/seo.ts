@@ -1,4 +1,4 @@
-import { AUTHOR_WEBSITE, BASE_URL, DEFAULT_LOCALE, LOCALES } from "@/lib/variables";
+import { BASE_URL, DEFAULT_LOCALE, LOCALES } from "@/lib/variables";
 
 export const ROOTKEYWORDS = [
     "invoice",
@@ -48,7 +48,7 @@ export function buildJsonLd(locale: string) {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "@id": `${BASE_URL}/#app`,
-        name: "Invoify",
+        name: "ITS (Ishaq Technical Solution)",
         url,
         applicationCategory: "BusinessApplication",
         operatingSystem: "Any",
@@ -66,8 +66,7 @@ export function buildJsonLd(locale: string) {
         },
         author: {
             "@type": "Person",
-            name: "Ali Abbasov",
-            url: AUTHOR_WEBSITE,
+            name: "Mohsina Abbas",
         },
     };
 }

@@ -15,7 +15,7 @@ import {
 } from "../parts";
 
 /**
- * Modern — the second original Invoify template, kept so invoices saved
+ * Modern — the second original ITS template, kept so invoices saved
  * against template 2 still render as their author left them. Stacked header
  * with the sender above a wide rule.
  */

@@ -7,8 +7,8 @@ import type { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: "Invoify — Free Invoice Generator",
-        short_name: "Invoify",
+        name: "ITS (Ishaq Technical Solution) — Free Invoice Generator",
+        short_name: "ITS",
         description:
             "Build an invoice from thirteen templates and download it as a PDF.",
         start_url: "/",

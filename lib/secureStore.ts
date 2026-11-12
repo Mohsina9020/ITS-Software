@@ -1,7 +1,7 @@
 /**
  * Encrypted at-rest storage for the data this app keeps about people.
  *
- * Invoify has no server and no account, so an address book, a draft and a pile
+ * ITS (Ishaq Technical Solution) has no server and no account, so an address book, a draft and a pile
  * of saved invoices all live in the browser. That is the design, not an
  * oversight — but until now it meant names, postal addresses, emails and phone
  * numbers sat in the profile directory as readable JSON, where a shared
@@ -42,7 +42,7 @@
  * stored byte, which matters when the browser's quota is the ceiling.
  */
 
-const DB_NAME = "invoify-secure";
+const DB_NAME = "its-secure";
 /** v2 added the values store; v1 held only the key. */
 const DB_VERSION = 2;
 const KEY_STORE = "keys";
