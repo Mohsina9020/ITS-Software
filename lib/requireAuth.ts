@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/auth";
 
 /** Returns the session or a 401 JSON response for API routes. */
 export async function requireApiSession() {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) {
         return {
             session: null as null,

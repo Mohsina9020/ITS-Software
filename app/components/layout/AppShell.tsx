@@ -2,7 +2,10 @@
 
 import { usePathname } from "next/navigation";
 
-import { BaseFooter, BaseNavbar } from "@/app/components";
+// Direct imports — avoid the app/components barrel so the login route does
+// not pull invoice form modules (calendar/date-fns) into the first paint.
+import BaseFooter from "@/app/components/layout/BaseFooter";
+import BaseNavbar from "@/app/components/layout/BaseNavbar";
 
 /**
  * Hides the main chrome on the login screen so unauthenticated visitors only

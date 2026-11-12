@@ -1,9 +1,11 @@
-import { getToken } from "next-auth/jwt";
+import NextAuth from "next-auth";
 import createIntlMiddleware from "next-intl/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
+import { authConfig } from "@/auth.config";
 import { routing } from "@/i18n/routing";
 
+const { auth } = NextAuth(authConfig);
 const intlMiddleware = createIntlMiddleware(routing);
 
 function localeFromPath(pathname: string): string {
@@ -23,25 +25,20 @@ function pathWithoutLocale(pathname: string): string {
     return pathname || "/";
 }
 
-export default async function middleware(req: NextRequest) {
+export default auth((req) => {
     const { pathname } = req.nextUrl;
 
-    // next-auth routes handle themselves
     if (pathname.startsWith("/api/auth")) {
         return NextResponse.next();
     }
 
-    const token = await getToken({
-        req,
-        secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
-    });
-
     const bare = pathWithoutLocale(pathname);
     const isLogin = bare === "/login" || bare.startsWith("/login/");
     const locale = localeFromPath(pathname);
+    const isLoggedIn = !!req.auth;
 
-    if (!token && !isLogin) {
-        const loginUrl = new URL(`/${locale}/login`, req.url);
+    if (!isLoggedIn && !isLogin) {
+        const loginUrl = new URL(`/${locale}/login`, req.nextUrl.origin);
         loginUrl.searchParams.set(
             "callbackUrl",
             `${pathname}${req.nextUrl.search}`
@@ -49,15 +46,15 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
 
-    if (token && isLogin) {
-        return NextResponse.redirect(new URL(`/${locale}`, req.url));
+    if (isLoggedIn && isLogin) {
+        return NextResponse.redirect(
+            new URL(`/${locale}`, req.nextUrl.origin)
+        );
     }
 
     return intlMiddleware(req);
-}
+});
 
 export const config = {
-    // Protect pages; API invoice/ledger auth is enforced in route handlers.
-    // Skip next-auth API, static assets, and Next internals.
     matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };

@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
-import { BaseButton } from "@/app/components";
+import BaseButton from "@/app/components/reusables/BaseButton";
 import { ITS_BRAND } from "@/lib/itsBrand";
 
 function LoginForm() {
