@@ -1,13 +1,13 @@
 "use client";
 
 // RHF
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 // ShadCn
 import { Switch } from "@/components/ui/switch";
 
 // Components
-import { BaseButton, ChargeInput } from "@/app/components";
+import { BaseButton, ChargeInput, FormInput } from "@/app/components";
 
 // Contexts
 import { useChargesContext } from "@/contexts/ChargesContext";
@@ -24,8 +24,18 @@ import { InvoiceType } from "@/types";
 
 const Charges = () => {
     const {
+        control,
         formState: { errors },
     } = useFormContext<InvoiceType>();
+
+    const previousBalance =
+        Number(useWatch({ name: "details.previousBalance", control }) ?? 0) ||
+        0;
+    const paidAmount =
+        Number(useWatch({ name: "details.paidAmount", control }) ?? 0) || 0;
+    const remainingBalance =
+        Number(useWatch({ name: "details.remainingBalance", control }) ?? 0) ||
+        0;
 
     const { _t } = useTranslationContext();
 
@@ -165,6 +175,46 @@ const Charges = () => {
                     )}
                 </div>
             </div>
+
+            <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">
+                    {_t("form.steps.summary.previousBalance")}
+                </span>
+                <span className="tabular-nums">
+                    {formatNumberWithCommas(previousBalance)} {currency}
+                </span>
+            </div>
+
+            <FormInput
+                name="details.paidAmount"
+                type="number"
+                label={_t("form.steps.summary.paidAmount")}
+                placeholder="0"
+            />
+
+            <div className="flex items-baseline justify-between rounded-md bg-muted/60 px-3 py-2">
+                <span className="font-medium">
+                    {_t("form.steps.summary.remainingBalance")}
+                </span>
+                <p
+                    className={`text-lg font-semibold tabular-nums ${
+                        remainingBalance > 0
+                            ? "text-destructive"
+                            : "text-foreground"
+                    }`}
+                >
+                    {formatNumberWithCommas(remainingBalance)} {currency}
+                </p>
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+                {_t("form.steps.summary.balanceFormula")}{" "}
+                <span className="tabular-nums">
+                    ({formatNumberWithCommas(previousBalance)} +{" "}
+                    {formatNumberWithCommas(totalAmount)} −{" "}
+                    {formatNumberWithCommas(paidAmount)})
+                </span>
+            </p>
 
             <div className="flex items-center justify-between gap-3 pt-1">
                 <span className="text-sm text-muted-foreground">

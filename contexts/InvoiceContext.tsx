@@ -42,6 +42,7 @@ import {
 
 // Storage
 import { readSecure, removeSecure, writeSecure } from "@/lib/secureStore";
+import { syncInvoiceToLedger } from "@/lib/ledgerStore";
 
 // Types
 import { ExportTypes, InvoiceType } from "@/types";
@@ -340,7 +341,18 @@ export const InvoiceContextProvider = ({
       setInvoicePdf(result);
 
       if (result.size > 0) {
-        // Toast
+        // Post this invoice's charge + paid installment into the client ledger.
+        try {
+          await syncInvoiceToLedger({
+            partyName: data.receiver.name,
+            invoiceNumber: data.details.invoiceNumber,
+            totalAmount: Number(data.details.totalAmount ?? 0) || 0,
+            paidAmount: Number(data.details.paidAmount ?? 0) || 0,
+            currency: data.details.currency || "PKR",
+          });
+        } catch (ledgerError) {
+          console.error("Ledger sync failed:", ledgerError);
+        }
         pdfGenerationSuccess();
       }
     } catch (err) {
@@ -356,7 +368,7 @@ export const InvoiceContextProvider = ({
         setInvoicePdfLoading(false);
       }
     }
-  }, [locale]);
+  }, [locale, pdfGenerationSuccess, pdfGenerationError]);
 
   /**
    * Removes the final PDF file and switches to Live Preview
@@ -461,6 +473,18 @@ export const InvoiceContextProvider = ({
         await writeSecure(SAVED_INVOICES_KEY, savedInvoices);
 
         setSavedInvoices(savedInvoices);
+
+        try {
+          await syncInvoiceToLedger({
+            partyName: formValues.receiver.name,
+            invoiceNumber: formValues.details.invoiceNumber,
+            totalAmount: Number(formValues.details.totalAmount ?? 0) || 0,
+            paidAmount: Number(formValues.details.paidAmount ?? 0) || 0,
+            currency: formValues.details.currency || "PKR",
+          });
+        } catch (ledgerError) {
+          console.error("Ledger sync failed:", ledgerError);
+        }
       }
     }
   };

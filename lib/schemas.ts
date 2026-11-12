@@ -197,6 +197,14 @@ const InvoiceDetailsSchema = z.object({
     subTotal: fieldValidators.nonNegativeNumber,
     totalAmount: fieldValidators.nonNegativeNumber,
     totalAmountInWords: fieldValidators.string,
+    /**
+     * Partial-payment / running-balance fields.
+     * Optional so invoices saved before this feature still validate;
+     * missing values are treated as 0 when rendering the PDF.
+     */
+    previousBalance: fieldValidators.nonNegativeNumber.optional().default(0),
+    paidAmount: fieldValidators.nonNegativeNumber.optional().default(0),
+    remainingBalance: z.coerce.number().optional().default(0),
     additionalNotes: fieldValidators.stringOptional,
     paymentTerms: fieldValidators.stringMin1,
     signature: SignatureSchema.optional(),

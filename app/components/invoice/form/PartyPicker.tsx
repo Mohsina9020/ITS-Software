@@ -27,6 +27,8 @@ import {
     type PartyKind,
     type SavedParty,
 } from "@/lib/partyStore";
+import { getPartyBalance, getPreviousBalance } from "@/lib/ledgerStore";
+import { formatNumberWithCommas } from "@/lib/helpers";
 
 // Utils
 import { cn } from "@/lib/utils";
@@ -58,6 +60,7 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
     const { partySaved, partyRemoved } = useToasts();
 
     const [parties, setParties] = useState<SavedParty[]>([]);
+    const [balances, setBalances] = useState<Record<string, number>>({});
     const [open, setOpen] = useState(false);
 
     /*
@@ -69,8 +72,17 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
      */
     useEffect(() => {
         let active = true;
-        readParties(kind).then((saved) => {
-            if (active) setParties(saved);
+        readParties(kind).then(async (saved) => {
+            if (!active) return;
+            setParties(saved);
+            if (kind !== "receiver") return;
+            const next: Record<string, number> = {};
+            await Promise.all(
+                saved.map(async (party) => {
+                    next[party.id] = await getPartyBalance(party.name);
+                })
+            );
+            if (active) setBalances(next);
         });
         return () => {
             active = false;
@@ -108,7 +120,7 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
     }, [getValues, kind, partySaved]);
 
     const handlePick = useCallback(
-        (party: SavedParty) => {
+        async (party: SavedParty) => {
             setOpen(false);
             /*
              * `id` is ours, not a form field — spreading it into the form would
@@ -120,8 +132,18 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
                 shouldDirty: true,
                 shouldValidate: true,
             });
+            if (kind === "receiver") {
+                const invoiceNumber = getValues("details.invoiceNumber");
+                const balance = await getPreviousBalance(
+                    party.name,
+                    invoiceNumber || undefined
+                );
+                setValue("details.previousBalance", Number(balance.toFixed(2)), {
+                    shouldDirty: true,
+                });
+            }
         },
-        [setValue, kind]
+        [setValue, kind, getValues]
     );
 
     const handleDelete = useCallback(
@@ -175,19 +197,31 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
                             >
                                 <button
                                     type="button"
-                                    onClick={() => handlePick(party)}
+                                    onClick={() => void handlePick(party)}
                                     className="min-w-0 flex-1 px-2 py-1.5 text-start"
                                 >
                                     <span className="block truncate text-sm font-medium">
                                         {party.name}
                                     </span>
-                                    {(party.city || party.country) && (
-                                        <span className="block truncate text-xs text-muted-foreground">
-                                            {[party.city, party.country]
-                                                .filter(Boolean)
-                                                .join(", ")}
-                                        </span>
-                                    )}
+                                    <span className="block truncate text-xs text-muted-foreground">
+                                        {[party.city, party.country]
+                                            .filter(Boolean)
+                                            .join(", ")}
+                                        {kind === "receiver" &&
+                                            balances[party.id] != null && (
+                                                <>
+                                                    {" · Bal "}
+                                                    {formatNumberWithCommas(
+                                                        Number(
+                                                            balances[
+                                                                party.id
+                                                            ].toFixed(2)
+                                                        )
+                                                    )}{" "}
+                                                    PKR
+                                                </>
+                                            )}
+                                    </span>
                                 </button>
 
                                 <button

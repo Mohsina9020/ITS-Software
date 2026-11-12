@@ -3,6 +3,7 @@
 // Components
 import {
     Charges,
+    ClientLedger,
     FormTextarea,
     PaymentTermPresets,
     SignatureModal,
@@ -48,8 +49,11 @@ const InvoiceSummary = () => {
                     </div>
                 </div>
 
-                {/* Final charges */}
+                {/* Final charges + paid / remaining */}
                 <Charges />
+
+                {/* Per-client installment ledger */}
+                <ClientLedger />
             </div>
         </section>
     );

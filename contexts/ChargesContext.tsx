@@ -34,7 +34,7 @@ const defaultChargesContext = {
     setShippingType: (newValue: SetStateAction<string>) => {},
     totalInWordsSwitch: true,
     setTotalInWordsSwitch: (newValue: boolean) => {},
-    currency: "USD",
+    currency: "PKR",
     subTotal: 0,
     totalAmount: 0,
     calculateTotal: () => {},
@@ -61,6 +61,16 @@ export const ChargesContextProvider = ({ children }: ChargesContextProps) => {
 
     const currency = useWatch({
         name: `details.currency`,
+        control,
+    });
+
+    const paidAmount = useWatch({
+        name: `details.paidAmount`,
+        control,
+    });
+
+    const previousBalance = useWatch({
+        name: `details.previousBalance`,
         control,
     });
 
@@ -226,7 +236,12 @@ export const ChargesContextProvider = ({ children }: ChargesContextProps) => {
         setValue("details.shippingDetails.costType", shippingCostType);
 
         setValue("details.totalAmount", total);
-        
+
+        const paid = Number(getValues("details.paidAmount") ?? 0) || 0;
+        const previous = Number(getValues("details.previousBalance") ?? 0) || 0;
+        const remaining = previous + total - paid;
+        setValue("details.remainingBalance", remaining);
+
         if (totalInWordsSwitch) {
             setValue("details.totalAmountInWords", formatPriceToString(total, getValues("details.currency")));
         } else {
@@ -253,6 +268,8 @@ export const ChargesContextProvider = ({ children }: ChargesContextProps) => {
         totalInWordsSwitch,
         // read via getValues inside, but a change must still recalculate
         currency,
+        paidAmount,
+        previousBalance,
         setValue,
         getValues,
     ]);

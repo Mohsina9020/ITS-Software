@@ -62,7 +62,7 @@ export function buildJsonLd(locale: string) {
         offers: {
             "@type": "Offer",
             price: "0",
-            priceCurrency: "USD",
+            priceCurrency: "PKR",
         },
         author: {
             "@type": "Person",

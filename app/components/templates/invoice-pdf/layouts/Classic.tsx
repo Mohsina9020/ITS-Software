@@ -3,6 +3,7 @@ import TemplateFrame, {
     type TemplateProps,
 } from "../TemplateFrame";
 import {
+    BalanceRows,
     ItemsTable,
     NotesBlock,
     PaymentBlock,
@@ -367,6 +368,8 @@ function TotalsIts({
                     {money(details.totalAmount)}
                 </span>
             </div>
+
+            <BalanceRows ctx={ctx} total={Number(details.totalAmount ?? 0)} navy={navy} gold={gold} />
 
             {details.totalAmountInWords && (
                 <p className={`${scale.label} mt-2 italic text-gray-500`}>

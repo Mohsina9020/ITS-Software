@@ -1632,7 +1632,7 @@ const SAMPLE_INVOICE = {
         items: [
             { name: "Product 1", description: "A thing", quantity: 4, unitPrice: 50, total: 200 },
         ],
-        currency: "USD",
+        currency: "PKR",
         language: "English",
         taxDetails: { amount: 15, amountType: "percentage", taxID: "987654321" },
         discountDetails: { amount: 5, amountType: "percentage" },

@@ -417,12 +417,77 @@ export function TotalsBlock({
                 </span>
             </div>
 
+            <BalanceRows
+                ctx={ctx}
+                total={Number(details.totalAmount ?? 0)}
+            />
+
             {details.totalAmountInWords && (
                 <p className={`${scale.label} mt-1.5 italic text-gray-500`}>
                     {labels.totalInWords}: {details.totalAmountInWords}{" "}
                     {details.currency}
                 </p>
             )}
+        </div>
+    );
+}
+
+/** Previous / paid / remaining rows shared by every template's totals. */
+export function BalanceRows({
+    ctx,
+    total,
+    navy,
+    gold,
+}: {
+    ctx: PartCtx;
+    total: number;
+    navy?: string;
+    gold?: string;
+}) {
+    const { data, labels, scale, locale } = ctx;
+    const { details } = data;
+    const previous = Number(details.previousBalance ?? 0) || 0;
+    const paid = Number(details.paidAmount ?? 0) || 0;
+    const remaining =
+        details.remainingBalance != null
+            ? Number(details.remainingBalance)
+            : previous + total - paid;
+
+    return (
+        <div className="mt-2 space-y-1">
+            <div
+                className={`${scale.body} flex justify-between gap-6 text-gray-600`}
+            >
+                <span>{labels.previousBalance ?? "Previous Balance"}</span>
+                <span className="tabular-nums">
+                    {money(previous, details.currency || "PKR", locale)}
+                </span>
+            </div>
+            <div
+                className={`${scale.body} flex justify-between gap-6 text-gray-600`}
+            >
+                <span>{labels.paidAmount ?? "Paid Amount"}</span>
+                <span className="tabular-nums">
+                    {money(paid, details.currency || "PKR", locale)}
+                </span>
+            </div>
+            <div
+                className={`${scale.body} flex items-center justify-between gap-6 rounded-md px-3 py-2 font-semibold`}
+                style={{
+                    backgroundColor: navy ?? ctx.theme.accentColor ?? "#0B1D35",
+                    color: "#ffffff",
+                }}
+            >
+                <span className="uppercase tracking-wide">
+                    {labels.remainingBalance ?? "Remaining Balance"}
+                </span>
+                <span
+                    className={`${scale.total} tabular-nums`}
+                    style={{ color: gold ?? "#ffffff" }}
+                >
+                    {money(remaining, details.currency || "PKR", locale)}
+                </span>
+            </div>
         </div>
     );
 }

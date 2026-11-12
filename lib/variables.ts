@@ -240,6 +240,9 @@ export const FORM_DEFAULT_VALUES = {
     additionalNotes: "",
     paymentTerms: "",
     totalAmountInWords: "",
+    previousBalance: 0,
+    paidAmount: 0,
+    remainingBalance: 0,
     pdfTemplate: 1,
     // `as const` so fontId/density keep their literal types and satisfy the
     // enums in ThemeSchema rather than widening to string.
@@ -302,7 +305,7 @@ export const FORM_FILL_VALUES = {
         total: 400,
       },
     ],
-    currency: "USD",
+    currency: "PKR",
     language: "English",
     taxDetails: {
       amount: 15,
@@ -330,6 +333,9 @@ export const FORM_FILL_VALUES = {
     subTotal: "850",
     totalAmount: "850",
     totalAmountInWords: "Eight Hundred Fifty",
+    previousBalance: 0,
+    paidAmount: 0,
+    remainingBalance: 850,
     pdfTemplate: 1,
     // `as const` so fontId/density keep their literal types and satisfy the
     // enums in ThemeSchema rather than widening to string.
