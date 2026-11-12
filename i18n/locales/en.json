@@ -178,12 +178,12 @@
     "language": "Language"
   },
   "invoiceDocument": {
-    "invoiceNumber": "Invoice #",
+    "invoiceNumber": "Invoice",
     "from": "From",
     "billTo": "Bill to",
     "invoiceDate": "Invoice date",
     "dueDate": "Due date",
-    "item": "Item",
+    "item": "Item / Work",
     "qty": "Qty",
     "rate": "Rate",
     "amount": "Amount",

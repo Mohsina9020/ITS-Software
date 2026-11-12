@@ -184,13 +184,13 @@ export const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
  */
 export const FORM_DEFAULT_VALUES = {
   sender: {
-    name: "",
-    address: "",
-    zipCode: "",
-    city: "",
-    country: "",
-    email: "",
-    phone: "",
+    name: "Ishaq Technical Solution",
+    address: "DHA Phase 5 Badian Road Jammou Stop",
+    zipCode: "54000",
+    city: "Lahore",
+    country: "Pakistan",
+    email: "ishaqtechnicalsalution@gmail.com",
+    phone: "0321-2258756 | 0307-4329423",
     customInputs: [],
   },
   receiver: {
@@ -217,7 +217,7 @@ export const FORM_DEFAULT_VALUES = {
         total: 0,
       },
     ],
-    currency: "USD",
+    currency: "PKR",
     language: "English",
     taxDetails: {
       amount: 0,
@@ -244,7 +244,7 @@ export const FORM_DEFAULT_VALUES = {
     // `as const` so fontId/density keep their literal types and satisfy the
     // enums in ThemeSchema rather than widening to string.
     theme: {
-      accentColor: "#4F46E5",
+      accentColor: "#0B1D35",
       fontId: "outfit",
       density: "comfortable",
     } as const,
@@ -257,7 +257,7 @@ export const FORM_DEFAULT_VALUES = {
  */
 export const FORM_FILL_VALUES = {
   sender: {
-    name: "John Doe",
+    name: "Ishaq Technical Solution",
     address: "123 Main St",
     zipCode: "12345",
     city: "Anytown",
@@ -334,7 +334,7 @@ export const FORM_FILL_VALUES = {
     // `as const` so fontId/density keep their literal types and satisfy the
     // enums in ThemeSchema rather than widening to string.
     theme: {
-      accentColor: "#4F46E5",
+      accentColor: "#0B1D35",
       fontId: "outfit",
       density: "comfortable",
     } as const,

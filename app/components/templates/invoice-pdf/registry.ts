@@ -22,8 +22,8 @@ export type TemplateEntry = {
 export const TEMPLATES: TemplateEntry[] = [
     {
         id: 1,
-        name: "Classic",
-        description: "Logo left, large invoice title right",
+        name: "ITS Quotation",
+        description: "Navy header, FROM/BILL TO cards, gold total — ITS brand layout",
         load: () => import("./layouts/Classic"),
     },
     {

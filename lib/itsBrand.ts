@@ -1,0 +1,24 @@
+/**
+ * ITS (Ishaq Technical Solution) brand tokens for PDF / invoice templates.
+ * Colours match the live quotation / payment-voucher documents.
+ */
+export const ITS_BRAND = {
+  name: "Ishaq Technical Solution",
+  shortName: "ITS",
+  tagline:
+    "On-Grid · Hybrid · Battery Bank · Electrical · CCTV · Networking · Consultancy",
+  servicesShort: "Solar · Electrical · Battery · CCTV · Networking",
+  footer:
+    "Power Your Future with ITS · DHA Phase 5 Badian Road Jammou Stop Lahore · WhatsApp 03212258756",
+  thankYou:
+    "Thank you for choosing Ishaq Technical Solution · All over Pakistan services available",
+  colors: {
+    navy: "#0B1D35",
+    teal: "#2EB7B8",
+    gold: "#E6B422",
+    card: "#F1F3F6",
+    muted: "#6B7280",
+    line: "#E5E7EB",
+    orange: "#F39C12",
+  },
+} as const;

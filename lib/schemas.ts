@@ -47,8 +47,8 @@ const fieldValidators = {
     email: z
         .string()
         .email({ message: "Email must be a valid email" })
-        .min(5, { message: "Must be between 5 and 30 characters" })
-        .max(30, { message: "Must be between 5 and 30 characters" }),
+        .min(5, { message: "Must be between 5 and 64 characters" })
+        .max(64, { message: "Must be between 5 and 64 characters" }),
     phone: z
         .string()
         .min(1, { message: "Must be between 1 and 50 characters" })

@@ -3,6 +3,9 @@ import React from "react";
 // Helpers
 import { formatDate, formatNumberWithCommas, isDataUrl } from "@/lib/helpers";
 
+// Brand
+import { ITS_LOGO_DATA_URL } from "@/lib/itsLogoDataUrl";
+
 // Labels & theme
 import type { InvoiceLabels } from "../invoiceLabels";
 import { type InvoiceScale, type InvoiceTheme } from "../invoiceTheme";
@@ -108,15 +111,22 @@ const money = (value: unknown, currency: string, locale: string) => {
  */
 export function Logo({ data, labels, plate = false }: PartCtx & { plate?: boolean }) {
     const { details, sender } = data;
-    if (!details.invoiceLogo) return null;
+    // Fall back to the ITS brand mark so every template header stays branded
+    // even when the user has not uploaded a custom logo yet.
+    const src = details.invoiceLogo || ITS_LOGO_DATA_URL;
 
     const img = (
         <img
-            src={details.invoiceLogo}
+            src={src}
             width={140}
             height={100}
-            alt={labels.logoAlt.replace("{name}", sender.name)}
-            style={{ maxHeight: 64, width: "auto", objectFit: "contain" }}
+            alt={labels.logoAlt.replace("{name}", sender.name || "ITS")}
+            style={{
+                maxHeight: 64,
+                width: "auto",
+                objectFit: "contain",
+                borderRadius: details.invoiceLogo ? undefined : "9999px",
+            }}
         />
     );
 
