@@ -164,7 +164,7 @@ export async function syncInvoiceToLedger(params: {
     const key = partyKeyFromName(partyName);
     if (!key || !invoiceNumber.trim()) return readLedger();
 
-    let all = await readLedger();
+    const all = await readLedger();
     const without = all.filter(
         (e) =>
             !(
