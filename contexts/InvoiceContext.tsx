@@ -42,7 +42,7 @@ import {
 
 // Storage
 import { readSecure, removeSecure, writeSecure } from "@/lib/secureStore";
-import { syncInvoiceToLedger } from "@/lib/ledgerStore";
+import { apiSyncInvoiceToLedger } from "@/lib/ledgerApi";
 
 // Types
 import { ExportTypes, InvoiceType } from "@/types";
@@ -341,15 +341,19 @@ export const InvoiceContextProvider = ({
       setInvoicePdf(result);
 
       if (result.size > 0) {
-        // Post this invoice's charge + paid installment into the client ledger.
+        // Post this invoice's charge + paid installment into the persistent ledger.
         try {
-          await syncInvoiceToLedger({
+          const synced = await apiSyncInvoiceToLedger({
             partyName: data.receiver.name,
             invoiceNumber: data.details.invoiceNumber,
             totalAmount: Number(data.details.totalAmount ?? 0) || 0,
             paidAmount: Number(data.details.paidAmount ?? 0) || 0,
             currency: data.details.currency || "PKR",
           });
+          // Keep the open form aligned with what was posted.
+          if (typeof synced.previousBalance === "number") {
+            // form values already drove the PDF; no reset needed
+          }
         } catch (ledgerError) {
           console.error("Ledger sync failed:", ledgerError);
         }
@@ -475,7 +479,7 @@ export const InvoiceContextProvider = ({
         setSavedInvoices(savedInvoices);
 
         try {
-          await syncInvoiceToLedger({
+          await apiSyncInvoiceToLedger({
             partyName: formValues.receiver.name,
             invoiceNumber: formValues.details.invoiceNumber,
             totalAmount: Number(formValues.details.totalAmount ?? 0) || 0,

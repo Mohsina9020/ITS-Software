@@ -11,15 +11,14 @@ import { BaseButton, FormInput, Subheading } from "@/app/components";
 // Contexts
 import { useTranslationContext } from "@/contexts/TranslationContext";
 
-// Store
+// API
 import {
-    addLedgerEntry,
-    deleteLedgerEntry,
-    getPreviousBalance,
-    partyKeyFromName,
-    readPartyLedger,
-    type LedgerEntry,
-} from "@/lib/ledgerStore";
+    apiAddLedgerEntry,
+    apiDeleteLedgerEntry,
+    apiGetPreviousBalance,
+    apiReadPartyLedger,
+} from "@/lib/ledgerApi";
+import { partyKeyFromName, type LedgerEntry } from "@/lib/ledgerStore";
 
 // Helpers
 import { formatNumberWithCommas } from "@/lib/helpers";
@@ -32,11 +31,7 @@ import type { InvoiceType } from "@/types";
 
 /**
  * Partial payments + running balance for the current Bill To client.
- *
- * The invoice itself carries previousBalance / paidAmount / remainingBalance
- * for the PDF. This panel is the live ledger: past In/Out rows, a quick
- * installment form, and syncing previousBalance into the invoice when the
- * client name changes.
+ * Persists through `/api/ledger` (Firestore or local server file).
  */
 const ClientLedger = () => {
     const { _t } = useTranslationContext();
@@ -51,6 +46,7 @@ const ClientLedger = () => {
     const [amount, setAmount] = useState("");
     const [note, setNote] = useState("");
     const [busy, setBusy] = useState(false);
+    const [backendError, setBackendError] = useState<string | null>(null);
 
     const refresh = useCallback(async () => {
         if (!receiverName.trim()) {
@@ -58,15 +54,21 @@ const ClientLedger = () => {
             setValue("details.previousBalance", 0, { shouldDirty: false });
             return;
         }
-        const rows = await readPartyLedger(receiverName);
-        setEntries(rows);
-        const balance = await getPreviousBalance(
-            receiverName,
-            invoiceNumber || undefined
-        );
-        setValue("details.previousBalance", Number(balance.toFixed(2)), {
-            shouldDirty: true,
-        });
+        try {
+            setBackendError(null);
+            const rows = await apiReadPartyLedger(receiverName);
+            setEntries(rows);
+            const balance = await apiGetPreviousBalance(
+                receiverName,
+                invoiceNumber || undefined
+            );
+            setValue("details.previousBalance", Number(balance.toFixed(2)), {
+                shouldDirty: true,
+            });
+        } catch (err) {
+            console.error(err);
+            setBackendError("Could not load ledger. Sign in again if needed.");
+        }
     }, [receiverName, invoiceNumber, setValue]);
 
     useEffect(() => {
@@ -87,7 +89,7 @@ const ClientLedger = () => {
             }
             setBusy(true);
             try {
-                await addLedgerEntry({
+                await apiAddLedgerEntry({
                     partyName: receiverName,
                     direction,
                     amount: value,
@@ -104,6 +106,9 @@ const ClientLedger = () => {
                 setAmount("");
                 setNote("");
                 await refresh();
+            } catch (err) {
+                console.error(err);
+                setBackendError("Could not save ledger entry.");
             } finally {
                 setBusy(false);
             }
@@ -115,13 +120,16 @@ const ClientLedger = () => {
         async (id: string) => {
             setBusy(true);
             try {
-                await deleteLedgerEntry(id);
+                await apiDeleteLedgerEntry(id, receiverName);
                 await refresh();
+            } catch (err) {
+                console.error(err);
+                setBackendError("Could not delete ledger entry.");
             } finally {
                 setBusy(false);
             }
         },
-        [refresh]
+        [receiverName, refresh]
     );
 
     if (!receiverName.trim()) {
@@ -164,6 +172,12 @@ const ClientLedger = () => {
                     </p>
                 </div>
             </div>
+
+            {backendError && (
+                <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                    {backendError}
+                </p>
+            )}
 
             <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]">
                 <input
@@ -232,7 +246,11 @@ const ClientLedger = () => {
                                         {entry.currency}
                                     </p>
                                     <p className="truncate text-xs text-muted-foreground">
-                                        {[entry.date, entry.note, entry.invoiceNumber]
+                                        {[
+                                            entry.date,
+                                            entry.note,
+                                            entry.invoiceNumber,
+                                        ]
                                             .filter(Boolean)
                                             .join(" · ")}
                                     </p>
@@ -252,7 +270,6 @@ const ClientLedger = () => {
                 )}
             </div>
 
-            {/* Keeps previous balance editable if the auto-fill needs a tweak */}
             <FormInput
                 name="details.previousBalance"
                 type="number"

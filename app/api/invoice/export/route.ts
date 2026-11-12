@@ -1,9 +1,10 @@
 import { NextRequest } from "next/server";
 
-// Services
+import { requireApiSession } from "@/lib/requireAuth";
 import { exportInvoiceService } from "@/services/invoice/server/exportInvoiceService";
 
 export async function POST(req: NextRequest) {
-    const result = await exportInvoiceService(req);
-    return result;
+    const { error } = await requireApiSession();
+    if (error) return error;
+    return exportInvoiceService(req);
 }

@@ -39,19 +39,27 @@ export default function Classic(props: TemplateProps) {
                 />
 
                 <div className="flex items-start justify-between gap-4">
-                    <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-3.5">
+                        {/*
+                         * Fixed circular brand mark. `contain` keeps the full
+                         * seal visible; white plate + ring so it stays crisp on
+                         * the navy header the way the printed QT PDFs do.
+                         */}
                         <img
                             src={logoSrc}
                             alt={labels.logoAlt.replace("{name}", companyName)}
-                            width={72}
-                            height={72}
+                            width={ITS_BRAND.logo.pdfPx}
+                            height={ITS_BRAND.logo.pdfPx}
                             style={{
-                                width: 72,
-                                height: 72,
+                                width: ITS_BRAND.logo.pdfPx,
+                                height: ITS_BRAND.logo.pdfPx,
                                 borderRadius: "9999px",
-                                objectFit: "cover",
+                                objectFit: "contain",
                                 flexShrink: 0,
                                 backgroundColor: "#ffffff",
+                                padding: 2,
+                                boxSizing: "border-box",
+                                border: `2px solid ${colors.teal}`,
                             }}
                         />
                         <div className="min-w-0">

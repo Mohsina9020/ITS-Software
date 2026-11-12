@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 
 // RHF
 import { FormProvider, useForm } from "react-hook-form";
@@ -106,22 +107,24 @@ const Providers = ({ children }: ProvidersProps) => {
   }, []);
 
   return (
-    <DirectionProvider dir={dir}>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <TranslationProvider>
-        <FormProvider {...form}>
-          <InvoiceContextProvider>
-            <ChargesContextProvider>{children}</ChargesContextProvider>
-          </InvoiceContextProvider>
-        </FormProvider>
-      </TranslationProvider>
-    </ThemeProvider>
-    </DirectionProvider>
+    <SessionProvider>
+      <DirectionProvider dir={dir}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TranslationProvider>
+            <FormProvider {...form}>
+              <InvoiceContextProvider>
+                <ChargesContextProvider>{children}</ChargesContextProvider>
+              </InvoiceContextProvider>
+            </FormProvider>
+          </TranslationProvider>
+        </ThemeProvider>
+      </DirectionProvider>
+    </SessionProvider>
   );
 };
 

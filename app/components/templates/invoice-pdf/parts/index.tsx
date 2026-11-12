@@ -113,19 +113,23 @@ export function Logo({ data, labels, plate = false }: PartCtx & { plate?: boolea
     const { details, sender } = data;
     // Fall back to the ITS brand mark so every template header stays branded
     // even when the user has not uploaded a custom logo yet.
+    const usingBrandMark = !details.invoiceLogo;
     const src = details.invoiceLogo || ITS_LOGO_DATA_URL;
+    const size = usingBrandMark ? 80 : 64;
 
     const img = (
         <img
             src={src}
-            width={140}
-            height={100}
+            width={size}
+            height={size}
             alt={labels.logoAlt.replace("{name}", sender.name || "ITS")}
             style={{
-                maxHeight: 64,
-                width: "auto",
+                width: size,
+                height: size,
+                maxHeight: size,
                 objectFit: "contain",
-                borderRadius: details.invoiceLogo ? undefined : "9999px",
+                borderRadius: usingBrandMark ? "9999px" : undefined,
+                flexShrink: 0,
             }}
         />
     );

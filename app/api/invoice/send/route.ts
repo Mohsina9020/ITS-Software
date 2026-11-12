@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Services
+import { requireApiSession } from "@/lib/requireAuth";
 import {
     SendPdfRequestError,
     sendPdfToEmailService,
 } from "@/services/invoice/server/sendPdfToEmailService";
 
 export async function POST(req: NextRequest) {
+    const { error } = await requireApiSession();
+    if (error) return error;
+
     try {
         const emailSent = await sendPdfToEmailService(req);
 

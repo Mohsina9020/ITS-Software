@@ -27,6 +27,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# Persistent local ledger fallback (when Firebase is not configured)
+/.data/
+
 # vercel
 .vercel
 

@@ -5,6 +5,8 @@
 export const ITS_BRAND = {
   name: "Ishaq Technical Solution",
   shortName: "ITS",
+  /** Public path for the UI (Next.js /img serving). */
+  logoPath: "/assets/img/its-logo.png",
   tagline:
     "On-Grid · Hybrid · Battery Bank · Electrical · CCTV · Networking · Consultancy",
   servicesShort: "Solar · Electrical · Battery · CCTV · Networking",
@@ -20,5 +22,15 @@ export const ITS_BRAND = {
     muted: "#6B7280",
     line: "#E5E7EB",
     orange: "#F39C12",
+  },
+  /**
+   * Display sizes — circular mark stays sharp on screen and on A4 PDF.
+   * PDF uses the inlined data URL (see lib/itsLogoDataUrl.ts) because the
+   * Puppeteer HTML document has no access to /public paths.
+   */
+  logo: {
+    navbarPx: 44,
+    pdfPx: 96,
+    previewPx: 80,
   },
 } as const;

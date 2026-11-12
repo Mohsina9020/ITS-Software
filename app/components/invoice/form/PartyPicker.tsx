@@ -27,7 +27,7 @@ import {
     type PartyKind,
     type SavedParty,
 } from "@/lib/partyStore";
-import { getPartyBalance, getPreviousBalance } from "@/lib/ledgerStore";
+import { apiGetPreviousBalance } from "@/lib/ledgerApi";
 import { formatNumberWithCommas } from "@/lib/helpers";
 
 // Utils
@@ -79,7 +79,13 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
             const next: Record<string, number> = {};
             await Promise.all(
                 saved.map(async (party) => {
-                    next[party.id] = await getPartyBalance(party.name);
+                    try {
+                        next[party.id] = await apiGetPreviousBalance(
+                            party.name
+                        );
+                    } catch {
+                        next[party.id] = 0;
+                    }
                 })
             );
             if (active) setBalances(next);
@@ -133,14 +139,20 @@ const PartyPicker = ({ kind }: { kind: PartyKind }) => {
                 shouldValidate: true,
             });
             if (kind === "receiver") {
-                const invoiceNumber = getValues("details.invoiceNumber");
-                const balance = await getPreviousBalance(
-                    party.name,
-                    invoiceNumber || undefined
-                );
-                setValue("details.previousBalance", Number(balance.toFixed(2)), {
-                    shouldDirty: true,
-                });
+                try {
+                    const invoiceNumber = getValues("details.invoiceNumber");
+                    const balance = await apiGetPreviousBalance(
+                        party.name,
+                        invoiceNumber || undefined
+                    );
+                    setValue(
+                        "details.previousBalance",
+                        Number(balance.toFixed(2)),
+                        { shouldDirty: true }
+                    );
+                } catch (err) {
+                    console.error(err);
+                }
             }
         },
         [setValue, kind, getValues]

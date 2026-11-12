@@ -1,9 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { signOut } from "next-auth/react";
 
 // Next
 import Link from "next/link";
+import Image from "next/image";
+
+// Brand
+import { ITS_BRAND } from "@/lib/itsBrand";
 
 // ShadCn
 import {
@@ -26,7 +31,7 @@ import {
 import { useTranslationContext } from "@/contexts/TranslationContext";
 
 // Icons
-import { Settings2 } from "lucide-react";
+import { LogOut, Settings2 } from "lucide-react";
 
 const BaseNavbar = () => {
     const devEnv = useMemo(() => {
@@ -36,20 +41,32 @@ const BaseNavbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const { _t } = useTranslationContext();
+    const logoSize = ITS_BRAND.logo.navbarPx;
 
     return (
         <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
             <nav className="container flex h-16 items-center justify-between gap-4">
                 <Link
                     href="/"
-                    className="flex shrink-0 flex-col justify-center leading-tight"
+                    className="flex shrink-0 items-center gap-2.5"
                     aria-label="ITS (Ishaq Technical Solution)"
                 >
-                    <span className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-                        ITS
-                    </span>
-                    <span className="hidden text-[10px] text-muted-foreground sm:block">
-                        Ishaq Technical Solution
+                    <Image
+                        src={ITS_BRAND.logoPath}
+                        alt="Ishaq Technical Solution logo"
+                        width={logoSize}
+                        height={logoSize}
+                        priority
+                        className="rounded-full object-contain shadow-sm ring-1 ring-border"
+                        style={{ width: logoSize, height: logoSize }}
+                    />
+                    <span className="flex min-w-0 flex-col leading-tight">
+                        <span className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
+                            {ITS_BRAND.shortName}
+                        </span>
+                        <span className="hidden truncate text-[10px] text-muted-foreground sm:block">
+                            {ITS_BRAND.name}
+                        </span>
                     </span>
                 </Link>
 
@@ -64,6 +81,16 @@ const BaseNavbar = () => {
                 <div className="hidden items-center gap-2 sm:flex">
                     <LanguageSelector />
                     <ThemeSwitcher />
+                    <BaseButton
+                        variant="ghost"
+                        size="sm"
+                        className="h-8"
+                        onClick={() => void signOut({ callbackUrl: "/en/login" })}
+                        tooltipLabel="Sign out"
+                    >
+                        <LogOut className="h-4 w-4" />
+                        <span className="hidden md:inline">Sign out</span>
+                    </BaseButton>
                 </div>
 
                 {/*
@@ -98,6 +125,18 @@ const BaseNavbar = () => {
                                 </div>
 
                                 {devEnv && <DevDebug />}
+
+                                <BaseButton
+                                    variant="outline"
+                                    onClick={() =>
+                                        void signOut({
+                                            callbackUrl: "/en/login",
+                                        })
+                                    }
+                                >
+                                    <LogOut className="h-4 w-4" />
+                                    Sign out
+                                </BaseButton>
                             </div>
                         </SheetContent>
                     </Sheet>

@@ -19,6 +19,10 @@ export const maxDuration = 30;
  * anything.
  */
 export async function GET(req: NextRequest) {
+    const { requireApiSession } = await import("@/lib/requireAuth");
+    const { error } = await requireApiSession();
+    if (error) return error;
+
     /*
      * Bounded, but not tight: the client pings this on every mount, so a normal
      * session with a few reloads or a language switch legitimately produces
