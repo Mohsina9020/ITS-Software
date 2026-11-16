@@ -65,7 +65,9 @@ export async function POST(req: NextRequest) {
             direction: body.direction === "in" ? "in" : "out",
             amount: Number(body.amount) || 0,
             currency: String(body.currency || "PKR"),
-            date: body.date ? String(body.date) : undefined,
+            date: body.date
+                ? String(body.date)
+                : new Date().toISOString().slice(0, 10),
             note: body.note ? String(body.note) : undefined,
             invoiceNumber: body.invoiceNumber
                 ? String(body.invoiceNumber)
